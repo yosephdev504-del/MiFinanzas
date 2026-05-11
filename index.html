@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplicación de finanzas personales para gestionar cuentas, ingresos y gastos con persistencia local.">
+    <title>MiFinanzas — Dashboard de Finanzas Personales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <span class="logo-text">MiFinanzas</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" data-section="dashboard" id="nav-dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-btn" data-section="income" id="nav-income">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+                <span>Ingresos</span>
+            </button>
+            <button class="nav-btn" data-section="expense" id="nav-expense">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+                <span>Gastos</span>
+            </button>
+            <button class="nav-btn" data-section="accounts" id="nav-accounts">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                </svg>
+                <span>Cuentas</span>
+            </button>
+            <button class="nav-btn" data-section="history" id="nav-history">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span>Historial</span>
+            </button>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-footer-text">v1.0 &mdash; Datos locales</div>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobile-header">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-logo">
+            <div class="logo-icon small">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                </svg>
+            </div>
+            <span>MiFinanzas</span>
+        </div>
+    </header>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+
+        <!-- ==================== DASHBOARD SECTION ==================== -->
+        <section class="section active" id="section-dashboard">
+            <div class="section-header">
+                <h1>Dashboard</h1>
+                <p class="section-subtitle">Resumen general de tus finanzas</p>
+            </div>
+
+            <!-- Total Balance Card -->
+            <div class="total-balance-card" id="total-balance-card">
+                <div class="total-balance-label">Saldo Total Consolidado</div>
+                <div class="total-balance-amount" id="total-balance">$0.00</div>
+                <div class="total-balance-detail">
+                    <span class="badge badge-income" id="dash-total-income">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                        Ingresos: $0.00
+                    </span>
+                    <span class="badge badge-expense" id="dash-total-expense">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                        Gastos: $0.00
+                    </span>
+                </div>
+            </div>
+
+            <!-- Account Cards Grid -->
+            <div class="accounts-grid" id="dashboard-accounts-grid">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-btn income" id="quick-add-income">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Registrar Ingreso
+                </button>
+                <button class="quick-action-btn expense" id="quick-add-expense">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Registrar Gasto
+                </button>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Transacciones Recientes</h2>
+                    <button class="link-btn" id="view-all-transactions">Ver todas</button>
+                </div>
+                <div class="transactions-list" id="recent-transactions">
+                    <div class="empty-state" id="empty-recent">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <p>No hay transacciones aún</p>
+                        <span>Registra tu primer ingreso o gasto para comenzar</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== INCOME SECTION ==================== -->
+        <section class="section" id="section-income">
+            <div class="section-header">
+                <h1>Registrar Ingreso</h1>
+                <p class="section-subtitle">Añade dinero a tus cuentas</p>
+            </div>
+            <div class="form-card">
+                <form id="income-form" autocomplete="off">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="income-amount">Monto ($)</label>
+                            <div class="input-icon-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                <input type="number" id="income-amount" placeholder="0.00" min="0.01" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="income-date">Fecha</label>
+                            <div class="input-icon-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <input type="date" id="income-date" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="income-origin">Origen del Ingreso</label>
+                            <select id="income-origin" required>
+                                <option value="" disabled selected>Selecciona origen</option>
+                                <option value="Sueldo Fijo">Sueldo Fijo</option>
+                                <option value="Proyecto de Publicidad">Proyecto de Publicidad</option>
+                                <option value="Venta de App">Venta de App</option>
+                                <option value="Pago de Prestaciones">Pago de Prestaciones</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="income-destination">Cuenta Destino</label>
+                            <select id="income-destination" required>
+                                <option value="" disabled selected>Selecciona cuenta</option>
+                                <option value="bank1">Cuenta Bancaria 1</option>
+                                <option value="bank2">Cuenta Bancaria 2</option>
+                                <option value="piggybank">Alcancía (Dinero en casa)</option>
+                                <option value="wallet">Cartera (Efectivo)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="income-note">Nota (opcional)</label>
+                        <input type="text" id="income-note" placeholder="Descripción breve del ingreso...">
+                    </div>
+                    <button type="submit" class="btn btn-income" id="submit-income">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Registrar Ingreso
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== EXPENSE SECTION ==================== -->
+        <section class="section" id="section-expense">
+            <div class="section-header">
+                <h1>Registrar Gasto</h1>
+                <p class="section-subtitle">Registra tus egresos</p>
+            </div>
+            <div class="form-card">
+                <form id="expense-form" autocomplete="off">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expense-amount">Monto ($)</label>
+                            <div class="input-icon-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                <input type="number" id="expense-amount" placeholder="0.00" min="0.01" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-date">Fecha</label>
+                            <div class="input-icon-wrapper">
+                                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                <input type="date" id="expense-date" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expense-category">Categoría</label>
+                            <select id="expense-category" required>
+                                <option value="" disabled selected>Selecciona categoría</option>
+                                <option value="Comida">Comida</option>
+                                <option value="Plan Móvil">Plan Móvil</option>
+                                <option value="Transporte">Transporte</option>
+                                <option value="Entretenimiento">Entretenimiento</option>
+                                <option value="Servicios">Servicios</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-source">Cuenta Fuente</label>
+                            <select id="expense-source" required>
+                                <option value="" disabled selected>Selecciona cuenta</option>
+                                <option value="bank1">Cuenta Bancaria 1</option>
+                                <option value="bank2">Cuenta Bancaria 2</option>
+                                <option value="piggybank">Alcancía (Dinero en casa)</option>
+                                <option value="wallet">Cartera (Efectivo)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-note">Nota (opcional)</label>
+                        <input type="text" id="expense-note" placeholder="Descripción breve del gasto...">
+                    </div>
+                    <button type="submit" class="btn btn-expense" id="submit-expense">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Registrar Gasto
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== ACCOUNTS SECTION ==================== -->
+        <section class="section" id="section-accounts">
+            <div class="section-header">
+                <h1>Gestión de Cuentas</h1>
+                <p class="section-subtitle">Configura el saldo inicial de tus cuentas</p>
+            </div>
+            <div class="accounts-setup-grid" id="accounts-setup-grid">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- ==================== HISTORY SECTION ==================== -->
+        <section class="section" id="section-history">
+            <div class="section-header">
+                <h1>Historial de Transacciones</h1>
+                <p class="section-subtitle">Todas tus transacciones registradas</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="filter-group">
+                    <label for="filter-type">Tipo</label>
+                    <select id="filter-type">
+                        <option value="all">Todos</option>
+                        <option value="income">Ingresos</option>
+                        <option value="expense">Gastos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-account">Cuenta</label>
+                    <select id="filter-account">
+                        <option value="all">Todas</option>
+                        <option value="bank1">Cuenta Bancaria 1</option>
+                        <option value="bank2">Cuenta Bancaria 2</option>
+                        <option value="piggybank">Alcancía</option>
+                        <option value="wallet">Cartera</option>
+                    </select>
+                </div>
+                <button class="btn btn-sm btn-outline" id="clear-filters">Limpiar Filtros</button>
+            </div>
+
+            <div class="panel">
+                <div class="transactions-list" id="all-transactions">
+                    <div class="empty-state" id="empty-history">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <p>No hay transacciones</p>
+                        <span>El historial aparecerá aquí cuando registres movimientos</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="confirm-modal">
+            <div class="modal-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <h3>¿Eliminar transacción?</h3>
+            <p>Esta acción no se puede deshacer. El saldo de la cuenta se ajustará automáticamente.</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="modal-cancel">Cancelar</button>
+                <button class="btn btn-danger" id="modal-confirm">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
